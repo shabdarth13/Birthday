@@ -1,1 +1,424 @@
-&lt;!DOCTYPE html&gt;<br/>&lt;html lang=&quot;en&quot;&gt;<br/>&lt;head&gt;<br/>    &lt;meta charset=&quot;UTF-8&quot;&gt;<br/>    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;<br/>    &lt;title&gt;Horror Birthday Surprise&lt;/title&gt;<br/>    &lt;style&gt;<br/>        * {<br/>            margin: 0;<br/>            padding: 0;<br/>            box-sizing: border-box;<br/>        }<br/>        <br/>        body {<br/>            background-color: #0a0408;<br/>            color: #c9c9c9;<br/>            font-family: &#39;Courier New&#39;, monospace;<br/>            height: 100vh;<br/>            overflow: hidden;<br/>            display: flex;<br/>            justify-content: center;<br/>            align-items: center;<br/>            position: relative;<br/>        }<br/>        <br/>        #container {<br/>            width: 100%;<br/>            height: 100%;<br/>            position: relative;<br/>            overflow: hidden;<br/>        }<br/>        <br/>        #main-content {<br/>            position: relative;<br/>            z-index: 10;<br/>            text-align: center;<br/>            padding: 2rem;<br/>            background-color: rgba(10, 4, 8, 0.7);<br/>            border-radius: 10px;<br/>            max-width: 600px;<br/>            margin: 0 auto;<br/>            margin-top: 5vh;<br/>            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);<br/>        }<br/>        <br/>        h1 {<br/>            font-size: 3rem;<br/>            color: #ff0000;<br/>            text-shadow: 0 0 10px #ff0000;<br/>            margin-bottom: 1rem;<br/>            letter-spacing: 2px;<br/>        }<br/>        <br/>        p {<br/>            font-size: 1.2rem;<br/>            margin-bottom: 2rem;<br/>            line-height: 1.6;<br/>        }<br/>        <br/>        #surprise {<br/>            background-color: #ff0000;<br/>            color: #0a0408;<br/>            border: none;<br/>            padding: 12px 25px;<br/>            font-size: 1.2rem;<br/>            border-radius: 5px;<br/>            cursor: pointer;<br/>            font-weight: bold;<br/>            letter-spacing: 1px;<br/>            transition: all 0.3s;<br/>            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);<br/>        }<br/>        <br/>        #surprise:hover {<br/>            background-color: #ff3333;<br/>            transform: scale(1.05);<br/>        }<br/>        <br/>        /* Horror elements */<br/>        #jumpscare {<br/>            position: fixed;<br/>            top: 0;<br/>            left: 0;<br/>            width: 100%;<br/>            height: 100%;<br/>            background-color: #000;<br/>            display: flex;<br/>            justify-content: center;<br/>            align-items: center;<br/>            z-index: 100;<br/>            opacity: 0;<br/>            pointer-events: none;<br/>            transition: opacity 0.2s;<br/>        }<br/>        <br/>        #jumpscare-img {<br/>            max-width: 90%;<br/>            max-height: 90%;<br/>            transform: scale(0.9);<br/>            opacity: 0;<br/>            transition: transform 0.2s, opacity 0.2s;<br/>        }<br/>        <br/>        #flicker {<br/>            position: fixed;<br/>            top: 0;<br/>            left: 0;<br/>            width: 100%;<br/>            height: 100%;<br/>            background-color: #000;<br/>            opacity: 0;<br/>            z-index: 5;<br/>            pointer-events: none;<br/>        }<br/>        <br/>        #blood {<br/>            position: fixed;<br/>            top: 0;<br/>            left: 0;<br/>            width: 100%;<br/>            height: 100%;<br/>            background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;100%25&#39; height=&#39;100%25&#39;%3E%3Cdefs%3E%3Cpattern id=&#39;blood&#39; patternUnits=&#39;userSpaceOnUse&#39; width=&#39;100&#39; height=&#39;100&#39;%3E%3Ccircle cx=&#39;30&#39; cy=&#39;30&#39; r=&#39;5&#39; fill=&#39;%23ff0000&#39; opacity=&#39;0.3&#39;/%3E%3Ccircle cx=&#39;70&#39; cy=&#39;60&#39; r=&#39;8&#39; fill=&#39;%23ff0000&#39; opacity=&#39;0.2&#39;/%3E%3Ccircle cx=&#39;40&#39; cy=&#39;80&#39; r=&#39;6&#39; fill=&#39;%23ff0000&#39; opacity=&#39;0.4&#39;/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=&#39;100%25&#39; height=&#39;100%25&#39; fill=&#39;url(%23blood)&#39; opacity=&#39;0.1&#39;/%3E%3C/svg%3E&quot;);<br/>            pointer-events: none;<br/>            z-index: 2;<br/>            opacity: 0;<br/>            transition: opacity 2s;<br/>        }<br/>        <br/>        #eyes {<br/>            position: fixed;<br/>            width: 100%;<br/>            height: 100%;<br/>            pointer-events: none;<br/>            z-index: 3;<br/>        }<br/>        <br/>        .eye {<br/>            position: absolute;<br/>            width: 40px;<br/>            height: 40px;<br/>            background-color: #ff0000;<br/>            border-radius: 50%;<br/>            box-shadow: 0 0 20px #ff0000;<br/>            opacity: 0;<br/>        }<br/>        <br/>        /* Floating particles for atmosphere */<br/>        #particles {<br/>            position: fixed;<br/>            top: 0;<br/>            left: 0;<br/>            width: 100%;<br/>            height: 100%;<br/>            pointer-events: none;<br/>            z-index: 1;<br/>        }<br/>        <br/>        .particle {<br/>            position: absolute;<br/>            width: 3px;<br/>            height: 3px;<br/>            background-color: #ff0000;<br/>            border-radius: 50%;<br/>            opacity: 0.3;<br/>        }<br/>        <br/>        /* Pulsing heart */<br/>        #pulse {<br/>            position: fixed;<br/>            top: 0;<br/>            left: 0;<br/>            width: 100%;<br/>            height: 100%;<br/>            pointer-events: none;<br/>            z-index: 4;<br/>            opacity: 0;<br/>        }<br/>        <br/>        /* Warning message */<br/>        #warning {<br/>            position: fixed;<br/>            bottom: 20px;<br/>            left: 0;<br/>            width: 100%;<br/>            text-align: center;<br/>            font-size: 0.9rem;<br/>            color: #ff0000;<br/>            opacity: 0.7;<br/>            z-index: 10;<br/>        }<br/>    &lt;/style&gt;<br/>&lt;/head&gt;<br/>&lt;body&gt;<br/>    &lt;div id=&quot;container&quot;&gt;<br/>        &lt;div id=&quot;particles&quot;&gt;&lt;/div&gt;<br/>        &lt;div id=&quot;eyes&quot;&gt;&lt;/div&gt;<br/>        &lt;div id=&quot;blood&quot;&gt;&lt;/div&gt;<br/>        &lt;div id=&quot;flicker&quot;&gt;&lt;/div&gt;<br/>        &lt;div id=&quot;pulse&quot;&gt;&lt;/div&gt;<br/>        <br/>        &lt;div id=&quot;main-content&quot;&gt;<br/>            &lt;h1&gt;janamdin ki hardik shubhkamnaye avni aka inglish madam&lt;/h1&gt;<br/>            &lt;p&gt;&lt;/p&gt;<br/>            &lt;p&gt;hehehe himmat hai to iche surprise wala buuton daba &lt;/p&gt;<br/>            &lt;button id=&quot;surprise&quot;&gt;Show Surprise&lt;/button&gt;<br/>        &lt;/div&gt;<br/>        <br/>        &lt;div id=&quot;jumpscare&quot;&gt;<br/>            &lt;img id=&quot;jumpscare-img&quot; src=&quot;data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; viewBox=&#39;0 0 400 400&#39;%3E%3Cpath fill=&#39;%23000&#39; d=&#39;M0 0h400v400H0z&#39;/%3E%3Cpath fill=&#39;%23f00&#39; d=&#39;M200 100c-55 0-100 45-100 100s45 100 100 100 100-45 100-100-45-100-100-100zm0 30c-39 0-70 31-70 70s31 70 70 70 70-31 70-70-31-70-70-70z&#39;/%3E%3Cpath fill=&#39;%23f00&#39; d=&#39;M150 160c-6 0-10 4-10 10s4 10 10 10 10-4 10-10-4-10-10-10zm100 0c-6 0-10 4-10 10s4 10 10 10 10-4 10-10-4-10-10-10z&#39;/%3E%3Cpath fill=&#39;%23fff&#39; d=&#39;M145 165c0-3 2-5 5-5s5 2 5 5-2 5-5 5-5-2-5-5zm100 0c0-3 2-5 5-5s5 2 5 5-2 5-5 5-5-2-5-5z&#39;/%3E%3Cpath fill=&#39;%23000&#39; d=&#39;M140 170c0-3 2-5 5-5s5 2 5 5-2 5-5 5-5-2-5-5zm110 0c0-3 2-5 5-5s5 2 5 5-2 5-5 5-5-2-5-5z&#39;/%3E%3Cpath fill=&#39;%23f00&#39; d=&#39;M170 230c0-17 13-30 30-30s30 13 30 30-13 30-30 30-30-13-30-30z&#39;/%3E%3Cpath fill=&#39;%23fff&#39; d=&#39;M160 240h80v10h-80z&#39;/%3E%3Cpath fill=&#39;%23f00&#39; d=&#39;M130 120c-6 0-11 5-11 11 0 7 5 12 11 12s12-5 12-12c0-6-5-11-12-11zm140 0c-6 0-12 5-12 11 0 7 6 12 12 12s11-5 11-12c0-6-5-11-11-11z&#39;/%3E%3C/svg%3E&quot; alt=&quot;Jumpscare&quot;&gt;<br/>        &lt;/div&gt;<br/>        <br/>        &lt;div id=&quot;warning&quot;&gt;Made by one and only shabd&lt;/div&gt;<br/>    &lt;/div&gt;<div></div>    &lt;script&gt;<br/>        // Create atmosphere particles<br/>        function createParticles() {<br/>            const particles = document.getElementById(&#39;particles&#39;);<br/>            for (let i = 0; i &lt; 50; i++) {<br/>                const particle = document.createElement(&#39;div&#39;);<br/>                particle.className = &#39;particle&#39;;<br/>                particle.style.left = Math.random() * 100 + &#39;%&#39;;<br/>                particle.style.top = Math.random() * 100 + &#39;%&#39;;<br/>                particle.style.animation = `float ${5 + Math.random() * 10}s infinite ease-in-out`;<br/>                particle.style.animationDelay = Math.random() * 5 + &#39;s&#39;;<br/>                particles.appendChild(particle);<br/>            }<br/>            <br/>            // Add animation style<br/>            const style = document.createElement(&#39;style&#39;);<br/>            style.textContent = `<br/>                @keyframes float {<br/>                    0%, 100% { transform: translate(0, 0); opacity: 0.3; }<br/>                    50% { transform: translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px); opacity: 0.6; }<br/>                }<br/>            `;<br/>            document.head.appendChild(style);<br/>        }<br/>        <br/>        // Create floating eyes<br/>        function createEyes() {<br/>            const eyes = document.getElementById(&#39;eyes&#39;);<br/>            for (let i = 0; i &lt; 15; i++) {<br/>                const eye = document.createElement(&#39;div&#39;);<br/>                eye.className = &#39;eye&#39;;<br/>                eye.style.left = Math.random() * 100 + &#39;%&#39;;<br/>                eye.style.top = Math.random() * 100 + &#39;%&#39;;<br/>                eye.style.animation = `glow ${2 + Math.random() * 3}s infinite ease-in-out`;<br/>                eye.style.animationDelay = Math.random() * 3 + &#39;s&#39;;<br/>                eyes.appendChild(eye);<br/>            }<br/>            <br/>            // Add glow animation<br/>            const style = document.createElement(&#39;style&#39;);<br/>            style.textContent = `<br/>                @keyframes glow {<br/>                    0%, 100% { opacity: 0; transform: scale(1); }<br/>                    50% { opacity: 0.7; transform: scale(1.2); }<br/>                }<br/>            `;<br/>            document.head.appendChild(style);<br/>        }<br/>        <br/>        // Flickering lights effect<br/>        function flickerLights() {<br/>            const flicker = document.getElementById(&#39;flicker&#39;);<br/>            let count = 0;<br/>            const interval = setInterval(() =&gt; {<br/>                flicker.style.opacity = Math.random() * 0.3;<br/>                count++;<br/>                if (count &gt; 20) {<br/>                    clearInterval(interval);<br/>                    flicker.style.opacity = 0;<br/>                }<br/>            }, 100);<br/>        }<br/>        <br/>        // Show eyes in the darkness<br/>        function showEyes() {<br/>            const eyes = document.querySelectorAll(&#39;.eye&#39;);<br/>            eyes.forEach(eye =&gt; {<br/>                eye.style.opacity = 0.8;<br/>            });<br/>            <br/>            setTimeout(() =&gt; {<br/>                eyes.forEach(eye =&gt; {<br/>                    eye.style.opacity = 0;<br/>                });<br/>            }, 2000);<br/>        }<br/>        <br/>        // Blood effect<br/>        function showBlood() {<br/>            const blood = document.getElementById(&#39;blood&#39;);<br/>            blood.style.opacity = 0.7;<br/>            <br/>            setTimeout(() =&gt; {<br/>                blood.style.opacity = 0;<br/>            }, 3000);<br/>        }<br/>        <br/>        // Heart pulse effect<br/>        function pulseEffect() {<br/>            const pulse = document.getElementById(&#39;pulse&#39;);<br/>            pulse.style.backgroundColor = &#39;#ff0000&#39;;<br/>            pulse.style.opacity = 0.3;<br/>            <br/>            let scale = 1;<br/>            const interval = setInterval(() =&gt; {<br/>                pulse.style.transform = `scale(${scale})`;<br/>                pulse.style.opacity = 0.4 - (scale * 0.1);<br/>                scale += 0.1;<br/>                if (scale &gt; 4) {<br/>                    clearInterval(interval);<br/>                    pulse.style.opacity = 0;<br/>                }<br/>            }, 100);<br/>        }<br/>        <br/>        // The main jumpscare function<br/>        function triggerJumpscare() {<br/>            // Disable button to prevent multiple clicks<br/>            document.getElementById(&#39;surprise&#39;).disabled = true;<br/>            <br/>            // Initial effects<br/>            flickerLights();<br/>            showEyes();<br/>            showBlood();<br/>            pulseEffect();<br/>            <br/>            // Build up to the jumpscare<br/>            setTimeout(() =&gt; {<br/>                // Screen flash<br/>                document.getElementById(&#39;flicker&#39;).style.backgroundColor = &#39;#ff0000&#39;;<br/>                document.getElementById(&#39;flicker&#39;).style.opacity = 0.7;<br/>                <br/>                // Scream sound<br/>                try {<br/>                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();<br/>                    const oscillator = audioContext.createOscillator();<br/>                    const gainNode = audioContext.createGain();<br/>                    <br/>                    oscillator.type = &#39;sawtooth&#39;;<br/>                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);<br/>                    oscillator.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.3);<br/>                    <br/>                    gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);<br/>                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);<br/>                    <br/>                    oscillator.connect(gainNode);<br/>                    gainNode.connect(audioContext.destination);<br/>                    <br/>                    oscillator.start();<br/>                    oscillator.stop(audioContext.currentTime + 0.5);<br/>                } catch (e) {<br/>                    console.log(&#39;Web Audio API not supported&#39;);<br/>                }<br/>                <br/>                // Show jumpscare image<br/>                const jumpscare = document.getElementById(&#39;jumpscare&#39;);<br/>                const jumpscareImg = document.getElementById(&#39;jumpscare-img&#39;);<br/>                <br/>                jumpscare.style.opacity = 1;<br/>                jumpscare.style.pointerEvents = &#39;all&#39;;<br/>                jumpscareImg.style.opacity = 1;<br/>                jumpscareImg.style.transform = &#39;scale(1.2)&#39;;<br/>                <br/>                // Shake effect<br/>                document.body.style.animation = &#39;shake 0.5s&#39;;<br/>                <br/>            }, 2000);<br/>            <br/>            // Reset after jumpscare<br/>            setTimeout(() =&gt; {<br/>                const jumpscare = document.getElementById(&#39;jumpscare&#39;);<br/>                const jumpscareImg = document.getElementById(&#39;jumpscare-img&#39;);<br/>                <br/>                jumpscare.style.opacity = 0;<br/>                jumpscare.style.pointerEvents = &#39;none&#39;;<br/>                jumpscareImg.style.opacity = 0;<br/>                jumpscareImg.style.transform = &#39;scale(0.9)&#39;;<br/>                <br/>                document.getElementById(&#39;flicker&#39;).style.opacity = 0;<br/>                document.body.style.animation = &#39;&#39;;<br/>                <br/>                // Show birthday message<br/>                alert(&quot;Just kidding! Happy Birthday! 🎂&quot;);<br/>                <br/>                // Re-enable button<br/>                document.getElementById(&#39;surprise&#39;).disabled = false;<br/>            }, 4000);<br/>        }<br/>        <br/>        // Add shake animation<br/>        const shakeStyle = document.createElement(&#39;style&#39;);<br/>        shakeStyle.textContent = `<br/>            @keyframes shake {<br/>                0% { transform: translate(0, 0); }<br/>                20% { transform: translate(-10px, 0); }<br/>                40% { transform: translate(10px, 0); }<br/>                60% { transform: translate(-10px, 0); }<br/>                80% { transform: translate(10px, 0); }<br/>                100% { transform: translate(0, 0); }<br/>            }<br/>        `;<br/>        document.head.appendChild(shakeStyle);<br/>        <br/>        // Initialize the page<br/>        window.onload = function() {<br/>            createParticles();<br/>            createEyes();<br/>            <br/>            // Add event listener to the button<br/>            document.getElementById(&#39;surprise&#39;).addEventListener(&#39;click&#39;, triggerJumpscare);<br/>            <br/>            // Occasional flicker for atmosphere<br/>            setInterval(() =&gt; {<br/>                if (Math.random() &gt; 0.7) {<br/>                    flickerLights();<br/>                }<br/>            }, 5000);<br/>        };<br/>    &lt;/script&gt;<br/>&lt;/body&gt;<br/>&lt;/htmll
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horror Birthday Surprise</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+background-color: #0a0408;
+color: #c9c9c9;
+font-family: 'Courier New', monospace;
+height: 100vh;
+overflow: hidden;
+display: flex;
+justify-content: center;
+align-items: center;
+position: relative;
+}
+
+#container {
+width: 100%;
+height: 100%;
+position: relative;
+overflow: hidden;
+}
+
+#main-content {
+position: relative;
+z-index: 10;
+text-align: center;
+padding: 2rem;
+background-color: rgba(10, 4, 8, 0.7);
+border-radius: 10px;
+max-width: 600px;
+margin: 0 auto;
+margin-top: 5vh;
+box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+}
+
+h1 {
+font-size: 3rem;
+color: #ff0000;
+text-shadow: 0 0 10px #ff0000;
+margin-bottom: 1rem;
+letter-spacing: 2px;
+}
+
+p {
+font-size: 1.2rem;
+margin-bottom: 2rem;
+line-height: 1.6;
+}
+
+#surprise {
+background-color: #ff0000;
+color: #0a0408;
+border: none;
+padding: 12px 25px;
+font-size: 1.2rem;
+border-radius: 5px;
+cursor: pointer;
+font-weight: bold;
+letter-spacing: 1px;
+transition: all 0.3s;
+box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+
+#surprise:hover {
+background-color: #ff3333;
+transform: scale(1.05);
+}
+
+/* Horror elements */
+#jumpscare {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: #000;
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 100;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.2s;
+}
+
+#jumpscare-img {
+max-width: 90%;
+max-height: 90%;
+transform: scale(0.9);
+opacity: 0;
+transition: transform 0.2s, opacity 0.2s;
+}
+
+#flicker {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: #000;
+opacity: 0;
+z-index: 5;
+pointer-events: none;
+}
+
+#blood {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='blood' patternUnits='userSpaceOnUse' width='100' height='100'%3E%3Ccircle cx='30' cy='30' r='5' fill='%23ff0000' opacity='0.3'/%3E%3Ccircle cx='70' cy='60' r='8' fill='%23ff0000' opacity='0.2'/%3E%3Ccircle cx='40' cy='80' r='6' fill='%23ff0000' opacity='0.4'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23blood)' opacity='0.1'/%3E%3C/svg%3E");
+pointer-events: none;
+z-index: 2;
+opacity: 0;
+transition: opacity 2s;
+}
+
+#eyes {
+position: fixed;
+width: 100%;
+height: 100%;
+pointer-events: none;
+z-index: 3;
+}
+
+.eye {
+position: absolute;
+width: 40px;
+height: 40px;
+background-color: #ff0000;
+border-radius: 50%;
+box-shadow: 0 0 20px #ff0000;
+opacity: 0;
+}
+
+/* Floating particles for atmosphere */
+#particles {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+pointer-events: none;
+z-index: 1;
+}
+
+.particle {
+position: absolute;
+width: 3px;
+height: 3px;
+background-color: #ff0000;
+border-radius: 50%;
+opacity: 0.3;
+}
+
+/* Pulsing heart */
+#pulse {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+pointer-events: none;
+z-index: 4;
+opacity: 0;
+}
+
+/* Warning message */
+#warning {
+position: fixed;
+bottom: 20px;
+left: 0;
+width: 100%;
+text-align: center;
+font-size: 0.9rem;
+color: #ff0000;
+opacity: 0.7;
+z-index: 10;
+}
+</style>
+</head>
+<body>
+<div id="container">
+<div id="particles"></div>
+<div id="eyes"></div>
+<div id="blood"></div>
+<div id="flicker"></div>
+<div id="pulse"></div>
+
+<div id="main-content">
+<h1>janamdin ki hardik shubhkamnaye avni aka inglish madam</h1>
+<p></p>
+<p>hehehe himmat hai to iche surprise wala buuton daba </p>
+<button id="surprise">Show Surprise</button>
+</div>
+
+<div id="jumpscare">
+<img id="jumpscare-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cpath fill='%23000' d='M0 0h400v400H0z'/%3E%3Cpath fill='%23f00' d='M200 100c-55 0-100 45-100 100s45 100 100 100 100-45 100-100-45-100-100-100zm0 30c-39 0-70 31-70 70s31 70 70 70 70-31 70-70-31-70-70-70z'/%3E%3Cpath fill='%23f00' d='M150 160c-6 0-10 4-10 10s4 10 10 10 10-4 10-10-4-10-10-10zm100 0c-6 0-10 4-10 10s4 10 10 10 10-4 10-10-4-10-10-10z'/%3E%3Cpath fill='%23fff' d='M145 165c0-3 2-5 5-5s5 2 5 5-2 5-5 5-5-2-5-5zm100 0c0-3 2-5 5-5s5 2 5 5-2 5-5 5-5-2-5-5z'/%3E%3Cpath fill='%23000' d='M140 170c0-3 2-5 5-5s5 2 5 5-2 5-5 5-5-2-5-5zm110 0c0-3 2-5 5-5s5 2 5 5-2 5-5 5-5-2-5-5z'/%3E%3Cpath fill='%23f00' d='M170 230c0-17 13-30 30-30s30 13 30 30-13 30-30 30-30-13-30-30z'/%3E%3Cpath fill='%23fff' d='M160 240h80v10h-80z'/%3E%3Cpath fill='%23f00' d='M130 120c-6 0-11 5-11 11 0 7 5 12 11 12s12-5 12-12c0-6-5-11-12-11zm140 0c-6 0-12 5-12 11 0 7 6 12 12 12s11-5 11-12c0-6-5-11-11-11z'/%3E%3C/svg%3E" alt="Jumpscare">
+</div>
+
+<div id="warning">Made by one and only shabd</div>
+</div>
+<script>
+// Create atmosphere particles
+function createParticles() {
+const particles = document.getElementById('particles');
+for (let i = 0; i < 50; i++) {
+const particle = document.createElement('div');
+particle.className = 'particle';
+particle.style.left = Math.random() * 100 + '%';
+particle.style.top = Math.random() * 100 + '%';
+particle.style.animation = `float ${5 + Math.random() * 10}s infinite ease-in-out`;
+particle.style.animationDelay = Math.random() * 5 + 's';
+particles.appendChild(particle);
+}
+
+// Add animation style
+const style = document.createElement('style');
+style.textContent = `
+@keyframes float {
+0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+50% { transform: translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px); opacity: 0.6; }
+}
+`;
+document.head.appendChild(style);
+}
+
+// Create floating eyes
+function createEyes() {
+const eyes = document.getElementById('eyes');
+for (let i = 0; i < 15; i++) {
+const eye = document.createElement('div');
+eye.className = 'eye';
+eye.style.left = Math.random() * 100 + '%';
+eye.style.top = Math.random() * 100 + '%';
+eye.style.animation = `glow ${2 + Math.random() * 3}s infinite ease-in-out`;
+eye.style.animationDelay = Math.random() * 3 + 's';
+eyes.appendChild(eye);
+}
+
+// Add glow animation
+const style = document.createElement('style');
+style.textContent = `
+@keyframes glow {
+0%, 100% { opacity: 0; transform: scale(1); }
+50% { opacity: 0.7; transform: scale(1.2); }
+}
+`;
+document.head.appendChild(style);
+}
+
+// Flickering lights effect
+function flickerLights() {
+const flicker = document.getElementById('flicker');
+let count = 0;
+const interval = setInterval(() => {
+flicker.style.opacity = Math.random() * 0.3;
+count++;
+if (count > 20) {
+clearInterval(interval);
+flicker.style.opacity = 0;
+}
+}, 100);
+}
+
+// Show eyes in the darkness
+function showEyes() {
+const eyes = document.querySelectorAll('.eye');
+eyes.forEach(eye => {
+eye.style.opacity = 0.8;
+});
+
+setTimeout(() => {
+eyes.forEach(eye => {
+eye.style.opacity = 0;
+});
+}, 2000);
+}
+
+// Blood effect
+function showBlood() {
+const blood = document.getElementById('blood');
+blood.style.opacity = 0.7;
+
+setTimeout(() => {
+blood.style.opacity = 0;
+}, 3000);
+}
+
+// Heart pulse effect
+function pulseEffect() {
+const pulse = document.getElementById('pulse');
+pulse.style.backgroundColor = '#ff0000';
+pulse.style.opacity = 0.3;
+
+let scale = 1;
+const interval = setInterval(() => {
+pulse.style.transform = `scale(${scale})`;
+pulse.style.opacity = 0.4 - (scale * 0.1);
+scale += 0.1;
+if (scale > 4) {
+clearInterval(interval);
+pulse.style.opacity = 0;
+}
+}, 100);
+}
+
+// The main jumpscare function
+function triggerJumpscare() {
+// Disable button to prevent multiple clicks
+document.getElementById('surprise').disabled = true;
+
+// Initial effects
+flickerLights();
+showEyes();
+showBlood();
+pulseEffect();
+
+// Build up to the jumpscare
+setTimeout(() => {
+// Screen flash
+document.getElementById('flicker').style.backgroundColor = '#ff0000';
+document.getElementById('flicker').style.opacity = 0.7;
+
+// Scream sound
+try {
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const oscillator = audioContext.createOscillator();
+const gainNode = audioContext.createGain();
+
+oscillator.type = 'sawtooth';
+oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+oscillator.frequency.exponentialRampToValueAtTime(1000, audioContext.currentTime + 0.3);
+
+gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
+gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+oscillator.connect(gainNode);
+gainNode.connect(audioContext.destination);
+
+oscillator.start();
+oscillator.stop(audioContext.currentTime + 0.5);
+} catch (e) {
+console.log('Web Audio API not supported');
+}
+
+// Show jumpscare image
+const jumpscare = document.getElementById('jumpscare');
+const jumpscareImg = document.getElementById('jumpscare-img');
+
+jumpscare.style.opacity = 1;
+jumpscare.style.pointerEvents = 'all';
+jumpscareImg.style.opacity = 1;
+jumpscareImg.style.transform = 'scale(1.2)';
+
+// Shake effect
+document.body.style.animation = 'shake 0.5s';
+
+}, 2000);
+
+// Reset after jumpscare
+setTimeout(() => {
+const jumpscare = document.getElementById('jumpscare');
+const jumpscareImg = document.getElementById('jumpscare-img');
+
+jumpscare.style.opacity = 0;
+jumpscare.style.pointerEvents = 'none';
+jumpscareImg.style.opacity = 0;
+jumpscareImg.style.transform = 'scale(0.9)';
+
+document.getElementById('flicker').style.opacity = 0;
+document.body.style.animation = '';
+
+// Show birthday message
+alert("Just kidding! Happy Birthday! ðŸŽ‚");
+
+// Re-enable button
+document.getElementById('surprise').disabled = false;
+}, 4000);
+}
+
+// Add shake animation
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+@keyframes shake {
+0% { transform: translate(0, 0); }
+20% { transform: translate(-10px, 0); }
+40% { transform: translate(10px, 0); }
+60% { transform: translate(-10px, 0); }
+80% { transform: translate(10px, 0); }
+100% { transform: translate(0, 0); }
+}
+`;
+document.head.appendChild(shakeStyle);
+
+// Initialize the page
+window.onload = function() {
+createParticles();
+createEyes();
+
+// Add event listener to the button
+document.getElementById('surprise').addEventListener('click', triggerJumpscare);
+
+// Occasional flicker for atmosphere
+setInterval(() => {
+if (Math.random() > 0.7) {
+flickerLights();
+}
+}, 5000);
+};
+</script>
+</body>
+</htmll
